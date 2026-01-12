@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pendaftaran Poli Gigi</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Google Sans', Roboto, Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #202124;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            min-height: 100vh;
+        }
+
+        .header {
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 400;
+            color: #202124;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #5f6368;
+        }
+
+        .form-section {
+            margin-bottom: 32px;
+        }
+
+        .question {
+            margin-bottom: 24px;
+        }
+
+        .question-text {
+            font-size: 16px;
+            font-weight: 400;
+            color: #202124;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .required {
+            color: #ea4335;
+            margin-left: 4px;
+        }
+
+        .question-description {
+            font-size: 14px;
+            color: #5f6368;
+            margin-bottom: 12px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option:hover {
+            border-color: #c0c4cc;
+            background-color: #f8f9fa;
+        }
+
+        .option.selected {
+            border-color: #1a73e8;
+            background-color: #e8f0fe;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 12px;
+        }
+
+        .option label {
+            cursor: pointer;
+            flex: 1;
+            font-size: 16px;
+        }
+
+        .submit-section {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #dadce0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .submit-button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .submit-button:hover {
+            background-color: #1765cc;
+        }
+
+        .submit-button:disabled {
+            background-color: #dadce0;
+            cursor: not-allowed;
+        }
+
+        .clear-button {
+            background-color: transparent;
+            color: #1a73e8;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .clear-button:hover {
+            background-color: #f8f9fa;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            background-color: #e8f5e8;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .success-message h2 {
+            color: #0f9d58;
+            margin-bottom: 16px;
+        }
+
+        .error-message {
+            color: #ea4335;
+            font-size: 14px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 16px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .submit-section {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .clear-button, .submit-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Pendaftaran Poli Gigi</h1>
+        </div>
+
+        <form id="registrationForm">
+            <!-- Question 1: Patient Type -->
+            <div class="form-section" id="question1">
+                <div class="question">
+                    <div class="question-text">
+                        Pasien pedo atau dewasa?
+                        <span class="required">*</span>
+                    </div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 'patient_type')">
+                            <input type="radio" id="pedo" name="patient_type" value="Pedo" required>
+                            <label for="pedo">Pedo</label>
+                        </div>
+                        <div class="option" onclick="selectOption(this, 'patient_type')">
+                            <input type="radio" id="dewasa" name="patient_type" value="Dewasa" required>
+                            <label for="dewasa">Dewasa</label>
+                        </div>
+                    </div>
+                    <div class="error-message" id="patient_type_error">Silakan pilih salah satu opsi</div>
+                </div>
+            </div>
+
+            <!-- Final Result: Kiara - Poli Gigi dan Mulut (shown for Pedo) -->
+            <div class="form-section" id="kiara_result" style="display: none;">
+                <div class="question">
+                    <div class="question-text" style="color: #1a73e8; font-weight: 500; font-size: 18px;">
+                        Kiara - Poli Gigi dan Mulut
+                    </div>
+                    <div class="question-description">
+                        Anda akan diarahkan ke Kiara - Poli Gigi dan Mulut untuk perawatan gigi anak.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 3: Previous Visit (shown for Dewasa) -->
+            <div class="form-section" id="question3" style="display: none;">
+                <div class="question">
+                    <div class="question-text">
+                        Apakah pasien sudah pernah ke poli gigi RSCM?
+                    </div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 'previous_visit')">
+                            <input type="radio" id="sudah" name="previous_visit" value="Sudah">
+                            <label for="sudah">Sudah</label>
+                        </div>
+                        <div class="option" onclick="selectOption(this, 'previous_visit')">
+                            <input type="radio" id="belum" name="previous_visit" value="Belum">
+                            <label for="belum">Belum</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 4: Time Since Last Visit (shown for Sudah) -->
+            <div class="form-section" id="question4" style="display: none;">
+                <div class="question">
+                    <div class="question-text">
+                        Apakah sudah lebih dari 1 tahun?
+                    </div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 'time_since_visit')">
+                            <input type="radio" id="kurang" name="time_since_visit" value="Kurang dari satu tahun">
+                            <label for="kurang">Kurang dari satu tahun</label>
+                        </div>
+                        <div class="option" onclick="selectOption(this, 'time_since_visit')">
+                            <input type="radio" id="lebih" name="time_since_visit" value="Lebih dari satu tahun">
+                            <label for="lebih">Lebih dari satu tahun</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 5: Treatment Type (shown for Kurang dari satu tahun) -->
+            <div class="form-section" id="question5" style="display: none;">
+                <div class="question">
+                    <div class="question-text">
+                        Pilih jenis perawatan:
+                    </div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, 'treatment_type')">
+                            <input type="radio" id="konservasi" name="treatment_type" value="KONSERVASI">
+                            <label for="konservasi">Tambal gigi dan perawatan saraf gigi</label>
+                        </div>
+                        <div class="option" onclick="selectOption(this, 'treatment_type')">
+                            <input type="radio" id="bedah" name="treatment_type" value="BEDAH MULUT">
+                            <label for="bedah">Cabut gigi</label>
+                        </div>
+                        <div class="option" onclick="selectOption(this, 'treatment_type')">
+                            <input type="radio" id="prosthodonti" name="treatment_type" value="PROSTHODONTI">
+                            <label for="prosthodonti">Gigi palsu</label>
+                        </div>
+                        <div class="option" onclick="selectOption(this, 'treatment_type')">
+                            <input type="radio" id="penyakit_mulut" name="treatment_type" value="PENYAKIT MULUT">
+                            <label for="penyakit_mulut">Sariawan, sialometri, persiapan kemoradiasi, periksa ulang fokus infeksi</label>
+                        </div>
+                        <div class="option" onclick="selectOption(this, 'treatment_type')">
+                            <input type="radio" id="periodonti" name="treatment_type" value="PERIODONTI">
+                            <label for="periodonti">Keluhan gusi dan jaringan penyangga gigi</label>
+                        </div>
+                        <div class="option" onclick="selectOption(this, 'treatment_type')">
+                            <input type="radio" id="orthodonti" name="treatment_type" value="ORTHODONTI">
+                            <label for="orthodonti">Kawat gigi (non BPJS)</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Final Result: Treatment Department -->
+            <div class="form-section" id="treatment_result" style="display: none;">
+                <div class="question">
+                    <div class="question-text" style="color: #1a73e8; font-weight: 500; font-size: 18px;" id="treatment_department">
+                        <!-- Department name will be inserted here -->
+                    </div>
+                    <div class="question-description">
+                        Anda akan diarahkan ke departemen yang sesuai untuk perawatan lanjutan.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Final Result: ORAL DIAGNOSTIK -->
+            <div class="form-section" id="oral_diagnostik" style="display: none;">
+                <div class="question">
+                    <div class="question-text" style="color: #1a73e8; font-weight: 500; font-size: 18px;">
+                        ORAL DIAGNOSTIK
+                    </div>
+                    <div class="question-description">
+                        Anda akan diarahkan ke Oral Diagnostik untuk pemeriksaan awal.
+                    </div>
+                </div>
+            </div>
+
+            <div class="submit-section">
+                <button type="button" class="clear-button" onclick="clearForm()">Hapus formulir</button>
+                <button type="submit" class="submit-button">Kirim</button>
+            </div>
+        </form>
+
+        <div class="success-message" id="successMessage">
+            <h2>✓ Pendaftaran Berhasil!</h2>
+            <p>Terima kasih telah mendaftar ke Poli Gigi. Data Anda telah kami terima.</p>
+        </div>
+    </div>
+
+    <script>
+        function selectOption(optionElement, questionName) {
+            // Remove selected class from all options in the same question
+            const options = optionElement.parentElement.querySelectorAll('.option');
+            options.forEach(option => option.classList.remove('selected'));
+            
+            // Add selected class to clicked option
+            optionElement.classList.add('selected');
+            
+            // Check the radio button
+            const radio = optionElement.querySelector('input[type="radio"]');
+            radio.checked = true;
+            
+            // Hide error message for this question if exists
+            const errorMessage = document.getElementById(questionName + '_error');
+            if (errorMessage) {
+                errorMessage.style.display = 'none';
+            }
+            
+            // Handle conditional logic
+            if (questionName === 'patient_type') {
+                const selectedValue = radio.value;
+                showNextQuestion(selectedValue);
+            } else if (questionName === 'previous_visit') {
+                const selectedValue = radio.value;
+                handlePreviousVisit(selectedValue);
+            } else if (questionName === 'time_since_visit') {
+                const selectedValue = radio.value;
+                handleTimeSinceVisit(selectedValue);
+            } else if (questionName === 'treatment_type') {
+                const selectedValue = radio.value;
+                handleTreatmentType(selectedValue);
+            }
+        }
+
+        function showNextQuestion(patientType) {
+            // Hide all other questions first
+            document.getElementById('kiara_result').style.display = 'none';
+            document.getElementById('question3').style.display = 'none';
+            document.getElementById('question4').style.display = 'none';
+            document.getElementById('question5').style.display = 'none';
+            document.getElementById('oral_diagnostik').style.display = 'none';
+            
+            // Show appropriate question based on selection
+            if (patientType === 'Pedo') {
+                document.getElementById('kiara_result').style.display = 'block';
+            } else if (patientType === 'Dewasa') {
+                document.getElementById('question3').style.display = 'block';
+            }
+        }
+
+        function handlePreviousVisit(visitStatus) {
+            // Hide all subsequent questions
+            document.getElementById('question4').style.display = 'none';
+            document.getElementById('question5').style.display = 'none';
+            document.getElementById('treatment_result').style.display = 'none';
+            document.getElementById('oral_diagnostik').style.display = 'none';
+            
+            if (visitStatus === 'Belum') {
+                // Show ORAL DIAGNOSTIK
+                document.getElementById('oral_diagnostik').style.display = 'block';
+            } else if (visitStatus === 'Sudah') {
+                // Show time since last visit question
+                document.getElementById('question4').style.display = 'block';
+            }
+        }
+
+        function handleTimeSinceVisit(timeSince) {
+            // Hide all subsequent questions
+            document.getElementById('question5').style.display = 'none';
+            document.getElementById('treatment_result').style.display = 'none';
+            document.getElementById('oral_diagnostik').style.display = 'none';
+            
+            if (timeSince === 'Lebih dari satu tahun') {
+                // Show ORAL DIAGNOSTIK
+                document.getElementById('oral_diagnostik').style.display = 'block';
+            } else if (timeSince === 'Kurang dari satu tahun') {
+                // Show treatment type question
+                document.getElementById('question5').style.display = 'block';
+            }
+        }
+
+        function handleTreatmentType(treatmentDepartment) {
+            // Hide all subsequent questions
+            document.getElementById('oral_diagnostik').style.display = 'none';
+            
+            // Show treatment result with department name
+            document.getElementById('treatment_department').textContent = treatmentDepartment;
+            document.getElementById('treatment_result').style.display = 'block';
+        }
+
+        function validateForm() {
+            let isValid = true;
+            
+            // Check required patient_type question
+            const patientType = document.querySelector('input[name="patient_type"]:checked');
+            if (!patientType) {
+                document.getElementById('patient_type_error').style.display = 'block';
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+
+        function clearForm() {
+            // Clear all radio buttons
+            const radioButtons = document.querySelectorAll('input[type="radio"]');
+            radioButtons.forEach(radio => radio.checked = false);
+            
+            // Remove selected class from all options
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => option.classList.remove('selected'));
+            
+            // Hide all error messages
+            const errorMessages = document.querySelectorAll('.error-message');
+            errorMessages.forEach(error => error.style.display = 'none');
+            
+            // Hide all questions except first
+            document.getElementById('kiara_result').style.display = 'none';
+            document.getElementById('question3').style.display = 'none';
+            document.getElementById('question4').style.display = 'none';
+            document.getElementById('question5').style.display = 'none';
+            document.getElementById('treatment_result').style.display = 'none';
+            document.getElementById('oral_diagnostik').style.display = 'none';
+            
+            // Hide success message
+            document.getElementById('successMessage').style.display = 'none';
+            
+            // Show form again
+            document.getElementById('registrationForm').style.display = 'block';
+        }
+
+        function submitForm(event) {
+            event.preventDefault();
+            
+            if (!validateForm()) {
+                return;
+            }
+            
+            // Collect form data
+            const formData = new FormData(event.target);
+            const data = {};
+            
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            // Log form data (for demonstration purposes)
+            console.log('Form Data Submitted:', data);
+            
+            // Hide form and show success message
+            document.getElementById('registrationForm').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+        }
+
+        // Initialize form
+        document.getElementById('registrationForm').addEventListener('submit', submitForm);
+    </script>
+</body>
+</html>
